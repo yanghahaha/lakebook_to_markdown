@@ -1,20 +1,14 @@
 # Yuque Lakebook Converter
 
-A tool for converting Yuque exported `.lakebook` files to Markdown format, **primarily designed for migrating from Yuque to Obsidian**.
+[中文](README.md) | [English](README_EN.md)
 
-Based on [yuque2markdown](https://github.com/alswl/yuque2markdown) with improvements, added table document conversion functionality that supports converting to Obsidian Sheet Plus plugin format, allowing you to seamlessly edit tables in Obsidian.
-
-[中文](README.md) | English
+Convert Yuque exported `.lakebook` files to Markdown, **designed for migrating to Obsidian**.
 
 ## Features
 
-1. **Convert Documents to Markdown**: Convert Yuque regular documents to Markdown format, ready to use in Obsidian
-2. **Convert Tables to Sheet Plus Format**: Convert Yuque table documents to Obsidian Sheet Plus plugin format (**requires Sheet Plus plugin installation**), supports direct table editing in Obsidian
-3. **Convert Tables to CSV**: Alternative option, convert table documents to CSV format (no plugin dependency)
-4. **Preserve Directory Structure**: Output folder structure matches Yuque knowledge base structure for easy migration
-5. **Image Download**: Optional download of document images to local storage, ensuring proper display in Obsidian
-6. **Multi-file Support**: Process multiple lakebook files at once for batch migration
-7. **Organize by Knowledge Base**: Each knowledge base creates an independent subdirectory for easy management
+- Documents → Markdown
+- Tables → Obsidian Sheet Plus format (requires [plugin](https://github.com/ljcoder2015/obsidian-sheet-plus)) or CSV
+- Preserves directory structure, batch processing, optional image download
 
 ## Installation
 
@@ -24,184 +18,66 @@ pip install -r requirements.txt
 
 ## Usage
 
-### 1. Export Lakebook Files
+### 1. Export Lakebook
 
 1. Log in to Yuque and enter your knowledge base
-2. In the left sidebar > books > book, click "..." on the right, then click the "Settings" button, and click "Settings" again in the popup dialog
-3. At the bottom of the book settings, click the "Export" button
-4. Download the `.lakebook` file, which contains all documents under that book
+2. Left sidebar > books > book, click "..." on the right → "Settings" → click "Settings" again in popup
+3. At bottom of book settings, click "Export"
+4. Download `.lakebook` file
 
-### 2. Convert Documents
-
-#### Convert a Single File
+### 2. Convert
 
 ```bash
-python lakebook_converter.py /path/to/your/file.lakebook /path/to/output/folder
-```
+# Basic usage
+python lakebook_converter.py file.lakebook output/
 
-#### Convert Multiple Files
+# Convert tables (Sheet Plus format, recommended for Obsidian)
+python lakebook_converter.py file.lakebook output/ --convert-sheets --sheet-format sheet
 
-```bash
-python lakebook_converter.py file1.lakebook file2.lakebook file3.lakebook /path/to/output/folder
-```
-
-#### Convert All Lakebook Files in a Directory
-
-```bash
-python lakebook_converter.py /path/to/lakebook/directory /path/to/output/folder
-```
-
-#### Convert Tables to CSV (Default)
-
-```bash
-python lakebook_converter.py /path/to/your/file.lakebook /path/to/output/folder --convert-sheets
-# Or explicitly specify format
-python lakebook_converter.py /path/to/your/file.lakebook /path/to/output/folder --convert-sheets --sheet-format csv
-```
-
-#### Convert Tables to Obsidian Sheet Plus Format (Recommended for Obsidian)
-
-**Note: This format requires installing the [Obsidian Sheet Plus](https://github.com/ljcoder2015/obsidian-sheet-plus) plugin in Obsidian to properly display and edit tables.**
-
-```bash
-python lakebook_converter.py /path/to/your/file.lakebook /path/to/output/folder --convert-sheets --sheet-format sheet
-```
-
-#### Download Images to Local
-
-```bash
-python lakebook_converter.py /path/to/your/file.lakebook /path/to/output/folder --download-image
-```
-
-#### Complete Examples
-
-```bash
-# Convert multiple files, including tables to CSV, and download images
-python lakebook_converter.py book1.lakebook book2.lakebook output --convert-sheets --download-image
-
-# Convert all files in a directory
-python lakebook_converter.py ./lakebooks output --convert-sheets --download-image
+# Batch convert with image download
+python lakebook_converter.py *.lakebook output/ --convert-sheets --sheet-format sheet --download-image
 ```
 
 ## Parameters
 
-- `lakebook`: Lakebook file path or directory (required, supports multiple files or directories)
-- `output`: Output directory (required)
-- `--convert-sheets`: Convert table documents to CSV or Sheet Plus format (by default only converts regular documents to Markdown)
-- `--sheet-format {csv,sheet}`: Table output format, options: `csv` (CSV file) or `sheet` (Obsidian Sheet Plus format), default: `csv`
-- `--download-image`: Download images to local (images will be saved in `attachments` folder)
-
-## Features
-
-- **Multi-file Support**: Process multiple lakebook files at once
-- **Directory Scanning**: Specify a directory to automatically find all .lakebook files within it
-- **Organize by Knowledge Base**: Each knowledge base creates an independent subdirectory to avoid file confusion
-- **Auto-detect Knowledge Base Name**: Extract knowledge base name from lakebook file as directory name
+- `lakebook`: File or directory path (supports multiple)
+- `output`: Output directory
+- `--convert-sheets`: Convert table documents
+- `--sheet-format {csv,sheet}`: Table format, default `csv`, `sheet` requires Obsidian Sheet Plus plugin
+- `--download-image`: Download images locally
 
 ## Output Structure
-
-Converted files are organized by knowledge base (book), with each knowledge base in its own folder:
 
 ```
 output/
 ├── KnowledgeBase1/
-│   ├── DocumentTitle1.md
-│   ├── DocumentTitle2.md
-│   ├── Subdirectory/
-│   │   ├── SubDocument1.md
-│   │   └── TableDocument.csv
-│   └── attachments/  (if using --download-image)
-│       ├── DocumentTitle1_001.jpg
-│       └── DocumentTitle1_002.png
-├── KnowledgeBase2/
-│   ├── DocumentTitle1.md
-│   └── ...
-└── KnowledgeBase3/
+│   ├── Document1.md
+│   ├── Table.md (Sheet Plus format)
+│   └── attachments/ (images)
+└── KnowledgeBase2/
     └── ...
 ```
 
-## How It Works
+## Table Formats
 
-1. **Extract Lakebook**: Lakebook file is a tar archive containing JSON files for all documents
-2. **Parse Directory Structure**: Read directory structure (TOC) from `$meta.json`
-3. **Convert Documents**:
-   - **Regular Documents (Doc)**: Convert from HTML to Markdown
-   - **Table Documents (Sheet)**: Parse compressed table data, convert to CSV or Obsidian Sheet Plus format
+### Sheet Plus Format (Recommended)
 
-## Table Data Format
+**Requires [Obsidian Sheet Plus](https://github.com/ljcoder2015/obsidian-sheet-plus) plugin**
 
-Yuque tables use `lakesheet` format with zlib compression. The tool automatically:
-1. Decompresses zlib compressed data
-2. Parses JSON format table structure
-3. Extracts cell data
-4. Converts according to selected format
+- Direct editing in Obsidian with Excel-like functionality
+- Automatic date format conversion
+- Preserves styles and data types
 
 ### CSV Format
 
-Converts to standard CSV files that can be opened with Excel, Numbers, and other tools.
-
-### Obsidian Sheet Plus Format (Recommended for Obsidian Migration)
-
-**⚠️ Important: This format depends on the [Obsidian Sheet Plus](https://github.com/ljcoder2015/obsidian-sheet-plus) plugin. If you plan to migrate documents to Obsidian, it's recommended to use this format as it allows direct table editing in Obsidian with Excel-like functionality.**
-
-Converts to Obsidian Sheet Plus plugin format, allowing direct table editing in Obsidian with Excel-like functionality.
-
-**Format Features:**
-- Complete table data structure, including styles, cell types, etc.
-- Supports different data types: numbers, text, dates, etc.
-- Automatically identifies headers and applies styles
-- Can be directly edited and manipulated in Obsidian
-- **Automatic Date Conversion**: Automatically converts Excel date serial numbers to readable date format
-
-**Format Structure:**
-- Frontmatter: `excel-pro-plugin: parsed`
-- Sheet code block: Contains complete table JSON data (including styles, cell data, etc.)
-- MultiSheet code block: Table tab configuration
-
-**Example Format:**
-```markdown
----
-
-excel-pro-plugin: parsed
-
----
-```sheet
-{"id":"...","sheetOrder":["..."],"name":"WorkLog_2026.md","appVersion":"0.15.0","locale":"enUS","styles":{...},"sheets":{...},"resources":[...]}
-```
-
-```multiSheet
-{"tabs":[{"key":"sheet","type":"sheet","label":"Sheet"}],"defaultActiveKey":"sheet"}
-```
-
-**Usage Instructions (Migration to Obsidian):**
-1. **Install Plugin**: Install the [Obsidian Sheet Plus](https://github.com/ljcoder2015/obsidian-sheet-plus) plugin in Obsidian
-2. **Convert Tables**: Use `--sheet-format sheet` parameter to convert table documents
-3. **Import to Obsidian**: Copy the converted `.md` files to your Obsidian vault
-4. **Open and Edit**: Open the file in Obsidian, tables will render automatically and can be edited directly
+Standard CSV files, openable with Excel and other tools.
 
 ## Notes
 
-- **Obsidian Sheet Plus Plugin**: If using `--sheet-format sheet` format, you must install the Sheet Plus plugin in Obsidian to properly display and edit tables
-- Ensure sufficient disk space for output files
-- Conversion may take some time if there are many documents
-- Table conversion skips completely blank rows
+- Sheet Plus format requires installing the corresponding plugin in Obsidian
+- Converted Markdown files don't include title lines (titles are in filenames)
 - Image download requires network connection
 - Converted Markdown files do not include title lines (titles are reflected in filenames)
-
-## Troubleshooting
-
-### Issue: Table Conversion Failed
-
-- Check if the table document has data
-- Some special format tables may not be parsed correctly
-
-### Issue: Image Download Failed
-
-- Check network connection
-- Some image links may have expired
-
-### Issue: Dependency Installation Failed
-
 - Ensure Python 3.7+ is used
 - Try using `pip3` instead of `pip`
 
