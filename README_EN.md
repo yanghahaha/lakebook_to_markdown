@@ -1,6 +1,6 @@
 # Yuque Lakebook Converter
 
-A tool for converting Yuque exported `.lakebook` files to Markdown format, **designed specifically for migrating from Yuque to Obsidian**.
+A tool for converting Yuque exported `.lakebook` files to Markdown format, **primarily designed for migrating from Yuque to Obsidian**.
 
 Based on [yuque2markdown](https://github.com/alswl/yuque2markdown) with improvements, added table document conversion functionality that supports converting to Obsidian Sheet Plus plugin format, allowing you to seamlessly edit tables in Obsidian.
 
@@ -27,9 +27,9 @@ pip install -r requirements.txt
 ### 1. Export Lakebook Files
 
 1. Log in to Yuque and enter your knowledge base
-2. Click the "Settings" button in the top right corner
-3. Click the "Export" button
-4. Download the `.lakebook` file
+2. In the left sidebar > books > book, click "..." on the right, then click the "Settings" button, and click "Settings" again in the popup dialog
+3. At the bottom of the book settings, click the "Export" button
+4. Download the `.lakebook` file, which contains all documents under that book
 
 ### 2. Convert Documents
 

@@ -27,9 +27,9 @@ pip install -r requirements.txt
 ### 1. 导出 Lakebook 文件
 
 1. 登录语雀，进入你的知识库
-2. 点击右上角的"设置"按钮
-3. 点击"导出"按钮
-4. 下载 `.lakebook` 文件
+2. 在左侧栏>books>book, 右边点击 "..." , 点击 "设置" 按钮,弹出框里继续点击 "设置"
+3. 最下面book setting, 点击 "导出" 按钮
+4. 下载 `.lakebook` 文件, 得到该 book 下所有文档的 lakebook文件
 
 ### 2. 转换文档
 
