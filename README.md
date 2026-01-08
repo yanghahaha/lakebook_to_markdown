@@ -172,7 +172,6 @@ excel-pro-plugin: parsed
 ```multiSheet
 {"tabs":[{"key":"sheet","type":"sheet","label":"Sheet"}],"defaultActiveKey":"sheet"}
 ```
-```
 
 **使用说明（迁移到 Obsidian）：**
 1. **安装插件**：在 Obsidian 中安装 [Obsidian Sheet Plus](https://github.com/ljcoder2015/obsidian-sheet-plus) 插件
